@@ -6,7 +6,7 @@ body {
 }
 
 h1 {
-	font-size: 58px;
+	font-size: 54px;
 	width: 100%;
 	text-align: center;
 	margin-top: 25px;
@@ -22,7 +22,7 @@ h1 {
 a {
 	text-decoration: none;
 	font-size: 28px;
-	color: #2d2daa;
+	color: #337ab7;
 
 }
 
