@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="twittler.css">
+    <script src="jquery.js"></script>
+    <script src="timeago.js"></script>
+    <script src="data_generator.js"></script>
+  </head>
+  <body>
+    <script>
+
+      $(document).ready(function(){
+
+        var $body = $('body');
+        $body.html('');
+
+        var $following = $('<div id="following"></div>');
+
+        // button for showing all tweets
+        $('<button class="user show-all selected">*</button>').appendTo($following);
+
+        // build up a list of users followed
+        users.forEach(function (item) {
+          var $user = $('<button class="user"></button>').text(item);
+          $user.appendTo($following);
+        });
+        $following.appendTo($body);
+
+        // create the twittler feed
+        var $feed = $('<div id="feed"></div>');
+        $feed.appendTo($body);
+
+        // default state
+        var current = {
+          tweetIndex: 0,
+          user: '*',
+          feed: streams.home
+        };
+
+        // start showing tweets and updating every 3 seconds
+        showTweets(current.user);
+        setInterval(updateFeed, 3000);
+
+        // buttons with hover animations
+        $('.user').on('mouseenter', function() {
+          $(this).addClass('highlight');
+        });
+        $('.user').on('mouseleave', function() {
+          $(this).removeClass('highlight');
+        });
+
+        // highlight and show tweets of user when selected
+        $('.user').on('click', function() {
+          // use text in button to get username lol
+          showTweets($(this).text());
+          $('button').removeClass('selected');
+          $(this).addClass('selected');
+        });
+
+        $('.tweet').on('mouseenter', function() {
+          $(this).addClass('highlight');
+        });
+        $('.tweet').on('mouseleave', function() {
+          $(this).removeClass('highlight');
+        });
+        
+
+
+        function updateFeed() {
+          while(current.tweetIndex < current.feed.length){
+            var tweet = current.feed[current.tweetIndex];
+            var $tweet = $('<div class="tweet"></div>');
+
+            var $author = $('<div class="user"></div>').text(tweet.user);
+            $author.appendTo($tweet);
+
+            var $message = $('<div class="message"></div>').text(tweet.message);
+            $message.appendTo($tweet);
+
+            var $time = $('<div class="time"></span>').text($.timeago(tweet.created_at));
+            $time.appendTo($tweet);
+
+            $tweet.hide().prependTo($feed).slideDown(300);
+            current.tweetIndex ++;  
+          }
+        }
+
+        // remember '*' is for show all
+        function showTweets(username) {
+          if (username === '*') {
+            current.feed = streams.home;
+          } else {
+            current.feed = streams.users[username];          
+          }
+
+          current.username = username;
+          current.tweetIndex = 0;      
+          $('#feed').empty();
+          updateFeed();
+        }
+
+
+      });
+
+    </script>
+  </body>
+</html>
